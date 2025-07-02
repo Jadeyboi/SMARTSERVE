@@ -8,9 +8,16 @@ const Sidebar = ({ children }) => {
   console.log("Sidebar rendered");
 
   return (
-    <div className="min-h-screen flex text-gray-800 bg-gradient-to-br from-blue-50 via-white to-gray-100">
+    <div className="min-h-screen flex text-gray-800 bg-gradient-to-br from-blue-50 via-white to-gray-100 relative overflow-hidden">
+      {/* Watermark Logo */}
+      <img
+        src="/smartserve-logo.png"
+        alt="SmartServe Watermark"
+        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none z-0 w-[40vw] max-w-xl select-none"
+        aria-hidden="true"
+      />
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 shadow-sm sticky top-0 h-screen p-6">
+      <aside className="w-64 bg-white border-r border-gray-200 shadow-sm sticky top-0 h-screen p-6 z-10">
         <div className="flex flex-col items-center mb-10">
           <img
             src="/smartserve-logo.png"

@@ -10,7 +10,7 @@ export default function Login() {
     e.preventDefault();
 
     // For now, just log credentials to console (you'll replace this with an API call)
-    navigate("/dashboard");
+    navigate("/");
   };
 
   return (
