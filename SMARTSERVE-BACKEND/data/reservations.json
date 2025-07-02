@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "table": 3,
+    "time": "2025-06-24 19:00"
+  },
+  {
+    "id": 2,
+    "name": "Jane Smith",
+    "table": 1,
+    "time": "2025-06-24 20:00"
+  },
+  {
+    "id": 3,
+    "name": "jade cordero",
+    "table": "1",
+    "time": "2025-06-27T21:04"
+  },
+  {
+    "id": 4,
+    "name": "Kent Banzon",
+    "table": "4",
+    "time": "2025-06-21T21:04"
+  }
+]
