@@ -1,9 +1,21 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
+import { useEffect } from "react";
 
 const Layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+    if (
+      !isAuthenticated &&
+      location.pathname !== "/login" &&
+      location.pathname !== "/register"
+    ) {
+      navigate("/login");
+    }
+  }, [location, navigate]);
 
   return (
     <Sidebar>

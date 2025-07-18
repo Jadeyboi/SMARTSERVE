@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import StatCards from "../components/StatCards";
 import RecentReservations from "../components/RecentReservations";
 import { Menu, Home, MessageSquare, ClipboardList } from "lucide-react";
+import LogoutButton from "../components/LogoutButton";
 
 const Sidebar = ({ children }) => {
   const navigate = useNavigate();
@@ -56,6 +57,9 @@ const Sidebar = ({ children }) => {
             onclick={() => navigate("/menu")}
           />
         </nav>
+        <div className="mt-8 flex justify-center">
+          <LogoutButton />
+        </div>
       </aside>
 
       {/* Main Content */}
