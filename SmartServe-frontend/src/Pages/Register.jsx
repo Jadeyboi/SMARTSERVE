@@ -1,30 +1,46 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [position, setPosition] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
     const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const user = users.find(
-      (u) => u.email === email && u.password === password
-    );
-    if (!user) {
-      setError("Invalid email or password");
+    if (users.find((u) => u.email === email)) {
+      setError("Email already registered");
       return;
     }
-    localStorage.setItem("isAuthenticated", "true");
-    navigate("/dashboard");
+    users.push({ email, password, name, position });
+    localStorage.setItem("users", JSON.stringify(users));
+    navigate("/login");
   };
 
   return (
     <div style={styles.container}>
-      <h2>Login to SmartServe</h2>
-      <form onSubmit={handleLogin} style={styles.form}>
+      <h2>Register for SmartServe</h2>
+      <form onSubmit={handleRegister} style={styles.form}>
+        <input
+          type="text"
+          placeholder="Full Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          style={styles.input}
+        />
+        <input
+          type="text"
+          placeholder="Position (e.g. Manager, Staff)"
+          value={position}
+          onChange={(e) => setPosition(e.target.value)}
+          required
+          style={styles.input}
+        />
         <input
           type="email"
           placeholder="Email"
@@ -42,12 +58,12 @@ export default function Login() {
           style={styles.input}
         />
         <button type="submit" style={styles.button}>
-          Login
+          Register
         </button>
       </form>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <p>
-        Don't have an account? <a href="/register">Register</a>
+        Already have an account? <a href="/login">Login</a>
       </p>
     </div>
   );
