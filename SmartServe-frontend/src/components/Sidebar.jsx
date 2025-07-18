@@ -18,23 +18,22 @@ const Sidebar = ({ children }) => {
         aria-hidden="true"
       />
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 shadow-sm sticky top-0 h-screen p-6 z-10">
+      <aside className="w-64 bg-white border-r border-gray-200 shadow-sm sticky top-0 h-screen flex flex-col p-6 z-10">
         <div className="flex flex-col items-center mb-10">
           <img
             src="/smartserve-logo.png"
             alt="SmartServe Logo"
-            className="h-20 w-[30rem] object-contain bg-transparent"
+            className="h-20 w-32 object-contain bg-transparent"
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = "https://via.placeholder.com/480x80?text=Logo";
             }}
           />
         </div>
-
-        <h2 className="text-1xl font-bold text-blue-600 mb-10">
-          Name of Restaurant
+        <h2 className="text-lg font-bold text-blue-600 mb-8 text-center">
+          SmartServe
         </h2>
-        <nav className="space-y-4">
+        <nav className="flex flex-col gap-4 w-full items-center">
           <SidebarItem
             icon={<Home size={18} />}
             label="Dashboard"
@@ -56,12 +55,16 @@ const Sidebar = ({ children }) => {
             label="Menu"
             onclick={() => navigate("/menu")}
           />
+          <SidebarItem
+            icon={<Menu size={18} />}
+            label="Profile"
+            onclick={() => navigate("/profile")}
+          />
         </nav>
-        <div className="mt-8 flex justify-center">
+        <div className="mt-auto mb-4 w-full flex justify-center">
           <LogoutButton />
         </div>
       </aside>
-
       {/* Main Content */}
       <main className="w-full flex-1 p-6 md:p-10">{children}</main>
     </div>
