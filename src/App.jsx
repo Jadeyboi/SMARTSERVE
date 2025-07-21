@@ -11,6 +11,7 @@ import Menu from "./Pages/Menu";
 import Layout from "./components/Layout";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
+import Profile from "./Pages/Profile";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/reservations" element={<Reservations />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/menu" element={<Menu />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Routes>
