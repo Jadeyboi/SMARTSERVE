@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 export default function Profile() {
   const [user, setUser] = useState(
@@ -9,8 +9,23 @@ export default function Profile() {
     name: user?.name || "",
     position: user?.position || "",
     email: user?.email || "",
+    photo: user?.photo || "",
   });
   const [error, setError] = useState("");
+  const fileInputRef = useRef();
+
+  // Generate user number if not present
+  if (user && !user.userNumber) {
+    user.userNumber = "USR-" + Math.floor(100000 + Math.random() * 900000);
+    setUser({ ...user });
+    localStorage.setItem("currentUser", JSON.stringify({ ...user }));
+    // Also update in users array
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const updatedUsers = users.map((u) =>
+      u.email === user.email ? { ...u, userNumber: user.userNumber } : u
+    );
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+  }
 
   if (!user) {
     return (
@@ -30,6 +45,16 @@ export default function Profile() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setForm((prev) => ({ ...prev, photo: reader.result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSave = (e) => {
     e.preventDefault();
     if (!form.name || !form.position || !form.email) {
@@ -37,13 +62,14 @@ export default function Profile() {
       return;
     }
     // Update localStorage
+    const updatedUser = { ...user, ...form };
+    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
     const users = JSON.parse(localStorage.getItem("users") || "[]");
     const updatedUsers = users.map((u) =>
       u.email === user.email ? { ...u, ...form } : u
     );
     localStorage.setItem("users", JSON.stringify(updatedUsers));
-    localStorage.setItem("currentUser", JSON.stringify({ ...user, ...form }));
-    setUser({ ...user, ...form });
+    setUser(updatedUser);
     setEditing(false);
   };
 
@@ -53,6 +79,27 @@ export default function Profile() {
         My Profile
       </h2>
       <div style={styles.profileBox}>
+        <div style={{ textAlign: "center", marginBottom: 16 }}>
+          <img
+            src={
+              user.photo ||
+              "https://ui-avatars.com/api/?name=" +
+                encodeURIComponent(user.name || "User")
+            }
+            alt="Profile"
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: "50%",
+              objectFit: "cover",
+              border: "2px solid #2563eb",
+              marginBottom: 8,
+            }}
+          />
+        </div>
+        <p>
+          <strong>User Number:</strong> {user.userNumber}
+        </p>
         {editing ? (
           <form
             onSubmit={handleSave}
@@ -91,6 +138,31 @@ export default function Profile() {
                 required
               />
             </label>
+            <label>
+              <strong>Photo:</strong>
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={handlePhotoChange}
+                style={{ marginTop: 6 }}
+              />
+            </label>
+            {form.photo && (
+              <img
+                src={form.photo}
+                alt="Preview"
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  margin: "10px auto",
+                  display: "block",
+                  border: "1px solid #2563eb",
+                }}
+              />
+            )}
             {error && <p style={{ color: "#e53e3e" }}>{error}</p>}
             <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
               <button type="submit" style={styles.button}>
