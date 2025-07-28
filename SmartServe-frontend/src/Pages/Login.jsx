@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -15,17 +16,30 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const user = users.find(
-      (u) => u.email === email && u.password === password
-    );
-    if (!user) {
-      setError("Invalid email or password");
-      return;
-    }
-    localStorage.setItem("isAuthenticated", "true");
-    localStorage.setItem("currentUser", JSON.stringify(user));
-    navigate("/dashboard");
+    // const users = JSON.parse(localStorage.getItem("users") || "[]");
+    // const user = users.find(
+    //   (u) => u.email === email && u.password === password
+    // );
+    // if (!user) {
+    //   setError("Invalid email or password");
+    //   return;
+    // }
+    // localStorage.setItem("isAuthenticated", "true");
+    // localStorage.setItem("currentUser", JSON.stringify(user));
+    // navigate("/dashboard");
+    console.log(e);
+
+    axios
+      .post("http://127.0.0.1:5000/login", {
+        email: email,
+        password: password,
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   return (

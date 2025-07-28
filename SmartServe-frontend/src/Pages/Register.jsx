@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -11,13 +12,24 @@ export default function Register() {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    if (users.find((u) => u.email === email)) {
-      setError("Email already registered");
-      return;
-    }
-    users.push({ email, password, name, position });
-    localStorage.setItem("users", JSON.stringify(users));
+    axios
+      .post("http://127.0.0.1:5000/signup", {
+        email: email,
+        password: password,
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    // const users = JSON.parse(localStorage.getItem("users") || "[]");
+    // if (users.find((u) => u.email === email)) {
+    //   setError("Email already registered");
+    //   return;
+    // }
+    // users.push({ email, password, name, position });
+    // localStorage.setItem("users", JSON.stringify(users));
     navigate("/login");
   };
 
