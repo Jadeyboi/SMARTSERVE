@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -9,16 +10,33 @@ export default function Register() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    if (users.find((u) => u.email === email)) {
-      setError("Email already registered");
-      return;
+
+    try {
+      const response = await axios.post("http://localhost:5000/signup", {
+        firstName: name,
+        lastName: name,
+        position,
+        email,
+        password,
+      });
+
+      if (response.status === 201) {
+        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("currentUser", JSON.stringify(response.data.user));
+        navigate("/login");
+      } else if (response.status === 409) {
+        setError("User already exists.");
+      } else if (response.status === 400) {
+        setError("Please fill in all required fields.");
+      } else {
+        setError(response.data.error || "Registration failed.");
+      }
+    } catch (err) {
+      console.error("Signup Error:", err);
+      setError("Unable to connect to the server.");
     }
-    users.push({ email, password, name, position });
-    localStorage.setItem("users", JSON.stringify(users));
-    navigate("/login");
   };
 
   return (
@@ -61,9 +79,19 @@ export default function Register() {
           Register
         </button>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <p>
-        Already have an account? <a href="/login">Login</a>
+      {error && <p style={{ color: "red", marginTop: 10 }}>{error}</p>}
+      <p style={{ marginTop: 16, textAlign: "center" }}>
+        Already have an account?{" "}
+        <a
+          href="/login"
+          style={{
+            color: "#D63743",
+            textDecoration: "underline",
+            fontWeight: "bold",
+          }}
+        >
+          Login
+        </a>
       </p>
     </div>
   );
@@ -71,29 +99,35 @@ export default function Register() {
 
 const styles = {
   container: {
-    margin: "100px auto",
+    margin: "80px auto",
     padding: 20,
     maxWidth: 400,
-    border: "1px solid #ccc",
+    border: "1px solid #D63743",
     borderRadius: 10,
     textAlign: "center",
     fontFamily: "Arial, sans-serif",
+    backgroundColor: "#fff",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
   },
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: 10,
+    gap: 12,
   },
   input: {
-    padding: 10,
+    padding: 12,
     fontSize: 16,
+    borderRadius: 6,
+    border: "1px solid #D63743",
   },
   button: {
-    padding: 10,
+    padding: 12,
     fontSize: 16,
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#D63743",
     color: "#fff",
     border: "none",
+    borderRadius: 6,
     cursor: "pointer",
+    fontWeight: "bold",
   },
 };

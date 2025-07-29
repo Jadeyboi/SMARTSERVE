@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -15,17 +16,30 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const user = users.find(
-      (u) => u.email === email && u.password === password
-    );
-    if (!user) {
-      setError("Invalid email or password");
-      return;
-    }
-    localStorage.setItem("isAuthenticated", "true");
-    localStorage.setItem("currentUser", JSON.stringify(user));
-    navigate("/dashboard");
+
+    axios
+      .post("http://localhost:5000/login", {
+        email: email,
+        password: password,
+      })
+      .then(function (response) {
+        if (response.status === 200) {
+          localStorage.setItem("isAuthenticated", "true");
+          localStorage.setItem(
+            "currentUser",
+            JSON.stringify(response.data.user)
+          );
+          navigate("/dashboard");
+        } else if (response.status === 401) {
+          setError("Invalid email or password.");
+        } else {
+          setError("Login failed. Please try again.");
+        }
+      })
+      .catch(function (error) {
+        console.error("Login Error:", error);
+        setError("Unable to connect to the server");
+      });
   };
 
   return (
@@ -54,10 +68,24 @@ export default function Login() {
           </button>
         </form>
         {error && <p style={styles.error}>{error}</p>}
-        <p style={styles.registerText}>
-          Don't have an account?{" "}
-          <a href="/register" style={styles.registerLink}>
-            Register
+        <p
+          style={{
+            ...styles.registerText,
+            width: "100%",
+            textAlign: "center",
+            marginTop: 24,
+            fontSize: 15,
+            color: "#444",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+          }}
+        >
+          Don't have an account?
+          <a href="/create-account" style={styles.registerLink}>
+            Create Account
           </a>
         </p>
       </div>
